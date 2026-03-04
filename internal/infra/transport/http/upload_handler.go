@@ -33,7 +33,10 @@ func (h *UploadHandler) UploadFile(c echo.Context) error {
 
 	// Ensure upload dir exists
 	if _, err := os.Stat(h.uploadDir); os.IsNotExist(err) {
-		os.MkdirAll(h.uploadDir, os.ModePerm)
+		if err := os.MkdirAll(h.uploadDir, os.ModePerm); err != nil {
+			c.Logger().Errorf("Failed to create upload directory: %v", err)
+			return err
+		}
 	}
 
 	// Generate unique filename: base_timestamp.ext
@@ -44,16 +47,18 @@ func (h *UploadHandler) UploadFile(c echo.Context) error {
 
 	dst, err := os.Create(dstPath)
 	if err != nil {
+		c.Logger().Errorf("Failed to create destination file: %v", err)
 		return err
 	}
 	defer dst.Close()
 
 	if _, err = io.Copy(dst, src); err != nil {
+		c.Logger().Errorf("Failed to copy file contents: %v", err)
 		return err
 	}
 
 	// Return the relative URL
-	fileURL := fmt.Sprintf("/uploads/%s", filename)
+	fileURL := fmt.Sprintf("/api/v1/uploads/%s", filename)
 	return c.JSON(http.StatusOK, map[string]string{
 		"url":      fileURL,
 		"filename": filename,

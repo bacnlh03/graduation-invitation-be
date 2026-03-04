@@ -20,7 +20,7 @@ COPY --from=builder /app/bin/app ./app
 COPY migrations ./migrations
 
 # Create uploads directory
-RUN mkdir uploads
+RUN mkdir -p uploads
 
 # Default environment variables
 ENV APP_PORT=8765

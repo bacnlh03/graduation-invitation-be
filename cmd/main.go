@@ -52,7 +52,7 @@ func main() {
 	}))
 
 	// Serve static files from uploads directory
-	e.Static("/uploads", "uploads")
+	e.Static("/api/v1/uploads", "uploads")
 
 	http.RegisterRoutes(e, guestHandler, configHandler, authHandler, uploadHandler, cfg.JWTSecret)
 
