@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -42,7 +43,8 @@ func (h *UploadHandler) UploadFile(c echo.Context) error {
 	// Generate unique filename: base_timestamp.ext
 	ext := filepath.Ext(file.Filename)
 	base := file.Filename[:len(file.Filename)-len(ext)]
-	filename := fmt.Sprintf("%s_%d%s", base, time.Now().UnixNano(), ext)
+	sanitizedBase := slugify(base)
+	filename := fmt.Sprintf("%s_%d%s", sanitizedBase, time.Now().UnixNano(), ext)
 	dstPath := filepath.Join(h.uploadDir, filename)
 
 	dst, err := os.Create(dstPath)
@@ -63,4 +65,22 @@ func (h *UploadHandler) UploadFile(c echo.Context) error {
 		"url":      fileURL,
 		"filename": filename,
 	})
+}
+
+func slugify(s string) string {
+	s = strings.ToLower(s)
+	var res strings.Builder
+	for _, r := range s {
+		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') {
+			res.WriteRune(r)
+		} else if r == ' ' || r == '-' || r == '_' || r == '.' {
+			res.WriteRune('-')
+		}
+	}
+	// Replace multiple consecutive dashes with a single one
+	result := res.String()
+	for strings.Contains(result, "--") {
+		result = strings.ReplaceAll(result, "--", "-")
+	}
+	return strings.Trim(result, "-")
 }
