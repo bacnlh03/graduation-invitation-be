@@ -25,9 +25,6 @@ RUN mkdir uploads
 # Default environment variables
 ENV APP_PORT=8765
 ENV APP_ENV=production
-ENV DB_HOST=localhost
-ENV DB_PORT=5432
-ENV DB_SSLMODE=disable
 
 # Expose the application port
 EXPOSE 8765
