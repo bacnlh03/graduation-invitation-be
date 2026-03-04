@@ -19,6 +19,7 @@ type Config struct {
 	JWTSecret         string   `mapstructure:"JWT_SECRET"`
 	AppEnv            string   `mapstructure:"APP_ENV"`
 	CORSAllowed       []string `mapstructure:"CORS_ALLOWED_ORIGINS"`
+	UploadDir         string   `mapstructure:"UPLOAD_DIR"`
 }
 
 func LoadConfig() *Config {
@@ -31,6 +32,7 @@ func LoadConfig() *Config {
 
 	viper.SetDefault("APP_ENV", "development")
 	viper.SetDefault("CORS_ALLOWED_ORIGINS", []string{"*"})
+	viper.SetDefault("UPLOAD_DIR", "uploads")
 
 	var config Config
 	if err := viper.Unmarshal(&config); err != nil {

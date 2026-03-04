@@ -40,7 +40,7 @@ func main() {
 	configHandler := http.NewConfigHandler(configSvc)
 
 	// Upload
-	uploadHandler := http.NewUploadHandler("uploads")
+	uploadHandler := http.NewUploadHandler(cfg.UploadDir)
 
 	e := echo.New()
 
@@ -52,7 +52,7 @@ func main() {
 	}))
 
 	// Serve static files from uploads directory
-	e.Static("/api/v1/uploads", "uploads")
+	e.Static("/api/v1/uploads", cfg.UploadDir)
 
 	http.RegisterRoutes(e, guestHandler, configHandler, authHandler, uploadHandler, cfg.JWTSecret)
 

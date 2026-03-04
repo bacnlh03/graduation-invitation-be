@@ -25,6 +25,7 @@ RUN mkdir -p uploads
 # Default environment variables
 ENV APP_PORT=8765
 ENV APP_ENV=production
+ENV UPLOAD_DIR=/app/uploads
 
 # Expose the application port
 EXPOSE 8765
