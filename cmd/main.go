@@ -43,6 +43,8 @@ func main() {
 	uploadHandler := http.NewUploadHandler(cfg.UploadDir)
 
 	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
