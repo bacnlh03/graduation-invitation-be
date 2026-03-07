@@ -53,10 +53,8 @@ func main() {
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 	}))
 
-	// Serve static files from uploads directory
-	e.Static("/api/v1/uploads", cfg.UploadDir)
-
-	http.RegisterRoutes(e, guestHandler, configHandler, authHandler, uploadHandler, cfg.JWTSecret)
+	// Routes
+	http.RegisterRoutes(e, guestHandler, configHandler, authHandler, uploadHandler, cfg.JWTSecret, cfg.UploadDir)
 
 	e.Logger.Fatal(e.Start(":" + cfg.AppPort))
 }

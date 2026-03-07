@@ -1,8 +1,12 @@
 package http
 
-import "github.com/labstack/echo/v4"
+import (
+	"os"
 
-func RegisterRoutes(e *echo.Echo, guestH *GuestHandler, configH *ConfigHandler, authH *AuthHandler, uploadH *UploadHandler, jwtSecret string) {
+	"github.com/labstack/echo/v4"
+)
+
+func RegisterRoutes(e *echo.Echo, guestH *GuestHandler, configH *ConfigHandler, authH *AuthHandler, uploadH *UploadHandler, jwtSecret string, uploadDir string) {
 	api := e.Group("/api")
 	apiV1 := api.Group("/v1")
 
@@ -22,4 +26,20 @@ func RegisterRoutes(e *echo.Echo, guestH *GuestHandler, configH *ConfigHandler, 
 
 	admin.PUT("/config/invitation", configH.UpdateInvitationConfig)
 	admin.POST("/upload", uploadH.UploadFile)
+
+	// --- Static Files ---
+	apiV1.Static("/uploads", uploadDir)
+
+	// --- Debug ---
+	apiV1.GET("/debug/files", func(c echo.Context) error {
+		files, err := os.ReadDir(uploadDir)
+		if err != nil {
+			return c.String(500, err.Error())
+		}
+		var names []string
+		for _, f := range files {
+			names = append(names, f.Name())
+		}
+		return c.JSON(200, names)
+	})
 }

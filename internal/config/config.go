@@ -39,5 +39,7 @@ func LoadConfig() *Config {
 		log.Fatal("Không thể map cấu hình:", err)
 	}
 
+	log.Printf("[CONFIG] UPLOAD_DIR: %s", config.UploadDir)
+
 	return &config
 }

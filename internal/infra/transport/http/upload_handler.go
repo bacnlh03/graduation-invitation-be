@@ -54,6 +54,9 @@ func (h *UploadHandler) UploadFile(c echo.Context) error {
 	}
 	defer dst.Close()
 
+	absPath, _ := filepath.Abs(dstPath)
+	c.Logger().Infof("Saving file to: %s", absPath)
+
 	if _, err = io.Copy(dst, src); err != nil {
 		c.Logger().Errorf("Failed to copy file contents: %v", err)
 		return err
